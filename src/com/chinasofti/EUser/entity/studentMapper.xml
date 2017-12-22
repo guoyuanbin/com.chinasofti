@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinasofti.EUser.companyMapper">
+
+	<select id="getOneStudent" resultMap="resultStudentMap">
+		<!--  查询全部不需要  parameterType="int"-->
+		SELECT stu.student_id,stu.student_name,c.class_name,t.teacher_name FROM
+		 t_student stu INNER JOIN t_class c ON stu.`class_id`=c.`class_id` INNER  JOIN 
+		 t_teacher t ON c.`teacher_id`=t.`teacher_id` ;
+		<!-- 查询一个需要parameterType="int" -->
+		<!-- SELECT stu.student_id,stu.student_name,c.class_name,t.teacher_name FROM 
+		t_student stu INNER JOIN t_class c ON stu.`class_id`=c.`class_id` INNER  JOIN 
+		t_teacher t ON c.`teacher_id`=t.`teacher_id` where stu.student_id=#{id}; -->
+	</select>
+	<resultMap type="com.chinasofti.EUser.Student" id="resultStudentMap">
+		<id property="student_id" column="student_id"/>
+		<result property="student_name" column="student_name"/>
+		<association property="t_class" column="class_name" javaType="com.chinasofti.EUser.T_Class" >
+			<result property="class_name" column="class_name"/>
+				<association property="teacher" column="teacher_name" javaType="com.chinasofti.EUser.Teacher">
+				<result property="teacher_name" column="teacher_name"/>			
+			</association>
+			</association>
+	</resultMap>
+	<select id="queryT_Class" parameterType="String" resultType="com.chinasofti.EUser.T_Class">
+		select * from t_class where class_name=#{class_name}
+	</select>
+	<select id="queryOneStu" parameterType="String" resultType="com.chinasofti.EUser.Student">
+		select * from t_student where student_name=#{student_name}
+	</select>
+	<update id="updateStu" parameterType="com.chinasofti.EUser.Student">
+		update t_student set class_id=#{t_class.class_id} where student_id=#{student_id}
+	</update>
+</mapper>
